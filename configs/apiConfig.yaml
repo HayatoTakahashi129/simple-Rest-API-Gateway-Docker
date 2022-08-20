@@ -1,0 +1,5 @@
+/todo:
+  get:
+    routeFqdn: "https://stoplight.io/mocks/sonic-host/amplify-demo-todo/83730700"
+  post:
+    routeFqdn: "https://stoplight.io/mocks/sonic-host/amplify-demo-todo/83730700"
