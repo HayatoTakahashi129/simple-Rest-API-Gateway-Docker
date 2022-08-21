@@ -19,7 +19,7 @@ const proxyRouter: (req: Request, res: Response, next: NextFunction) => void = (
   next
 ) => {
   const url: string = req.path;
-  const method: string = req.method.toLowerCase();
+  const method: string = req.method;
   const proxyUrl: string = getProxyUrl(url, method);
   console.log(proxyUrl);
   if (!proxyUrl) {

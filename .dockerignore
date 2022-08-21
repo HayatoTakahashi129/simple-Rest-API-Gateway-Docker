@@ -1,5 +1,7 @@
 # node
 node_modules
+# typescript
+dist
 # git and github
 README.md
 .gitignore

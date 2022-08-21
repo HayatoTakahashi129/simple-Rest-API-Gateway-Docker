@@ -5,12 +5,12 @@ type MethodConfig = {
 };
 
 export type methods =
-  | "get"
-  | "post"
-  | "option"
-  | "head"
-  | "put"
-  | "patch"
-  | "delete";
+  | "GET"
+  | "POST"
+  | "OPTION"
+  | "HEAD"
+  | "PUT"
+  | "PATCH"
+  | "DELETE";
 
 export default MethodConfig;
