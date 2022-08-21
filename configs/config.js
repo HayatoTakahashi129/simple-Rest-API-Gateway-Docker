@@ -24,10 +24,17 @@ const getConfigs = () => {
   return CACHED_CONFIG;
 };
 
-const getProxyUrl = (path, method) => {
+const getConfig = (path, method) => {
   const configs = getConfigs();
-  return configs[path][method].routeFqdn;
+  const methodLower = method.toLowerCase();
+  return configs[path]?.[methodLower];
+};
+
+const getProxyUrl = (path, method) => {
+  const config = getConfig(path, method);
+  return config.routeFqdn;
 };
 
 module.exports.getConfigs = getConfigs;
+module.exports.getConfig = getConfig;
 module.exports.getProxyUrl = getProxyUrl;
