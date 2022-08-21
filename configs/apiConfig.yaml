@@ -1,10 +1,10 @@
 /todo:
-  get:
+  GET:
     routeFqdn: "https://stoplight.io/mocks/sonic-host/amplify-demo-todo/83730700"
     authorization:
       header: "Authorization"
       type: "jwt"
-  post:
+  POST:
     routeFqdn: "https://stoplight.io/mocks/sonic-host/amplify-demo-todo/83730700"
     authorization:
       header: "Authorization"
