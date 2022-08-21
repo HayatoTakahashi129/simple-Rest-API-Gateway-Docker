@@ -44,6 +44,6 @@ These are the keywords you can set.
 
 [HayatoTakahashi129](https://github.com/HayatoTakahashi129)
 
-## Licence
+## License
 
 [MIT](https://github.com/HayatoTakahashi129/simple-Rest-API-Gateway-Docker/blob/deveop/LICENSE)
