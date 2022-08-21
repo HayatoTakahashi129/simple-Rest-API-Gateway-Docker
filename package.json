@@ -5,8 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "start:docker": "docker start apigateway || bash -c 'docker run -d -e HOT_RELOAD=true -v /`pwd`/configs/apiConfig.yaml:/code/configs/apiConfig.yaml -p 30001:30001 --name apigateway apigateway'",
-    "stop:docker": "docker stop apigateway",
-    "testing": "bash -c 'echo `pwd`/configs/apiConfig.yaml'"
+    "stop:docker": "docker stop apigateway"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
