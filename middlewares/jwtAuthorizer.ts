@@ -1,35 +1,43 @@
+import { Request, Response, NextFunction } from "express";
+import Authorization from "../configs/types/Authorization";
 const { getConfig } = require("../configs/config");
 
-const getConfigAuthorization = (req) => {
+const getConfigAuthorization = (req: Request): Authorization => {
   const path = req.path;
   const method = req.method;
   console.log("input:", { path, method });
   const config = getConfig(path, method);
-  return config?.authorization;
+  return config.authorization;
 };
 
-const isValidConfig = (config) => {
+const isValidConfig = (config: Authorization | undefined): boolean => {
   if (!config) return false;
   if (!config.hasOwnProperty("header") || !config.hasOwnProperty("type"))
     return false;
   return true;
 };
 
-const getAuthorizationHeader = (req, authorizationConfig) => {
-  let authorizationHeader =
+const getAuthorizationHeader = (
+  req: Request,
+  authorizationConfig: Authorization
+): string => {
+  let authorizationHeader: string | string[] =
     req.headers[authorizationConfig.header.toLowerCase()] ?? "";
+  if (Array.isArray(authorizationHeader)) {
+    authorizationHeader = authorizationHeader[0];
+  }
   if (authorizationHeader.includes("Bearer"))
     authorizationHeader = authorizationHeader.replace("Bearer", "");
   authorizationHeader = authorizationHeader.replace(" ", "");
   return authorizationHeader;
 };
 
-const isDotsContains = (authorization) => {
+const isDotsContains = (authorization: string): boolean => {
   const splitDots = authorization.split(".");
   return splitDots.length === 3;
 };
 
-const isExpired = (authorization) => {
+const isExpired = (authorization: string): boolean => {
   const payload = authorization.split(".")[1];
   const decodePayload = Buffer.from(payload, "base64").toString();
   const payloadJson = JSON.parse(decodePayload);
@@ -41,7 +49,7 @@ const isExpired = (authorization) => {
   return Number(exp) < nowUnix;
 };
 
-const unAuthorizedResponse = (res, next) => {
+const unAuthorizedResponse = (res: Response, next: NextFunction) => {
   res.status(401);
   res.json({ message: "Unauthorized" });
   next();
@@ -53,7 +61,7 @@ const unAuthorizedResponse = (res, next) => {
  * @param {*} res
  * @param {*} next
  */
-const jwtAuthorizer = (req, res, next) => {
+const jwtAuthorizer = (req: Request, res: Response, next: NextFunction) => {
   const authorizationConfig = getConfigAuthorization(req);
   if (!isValidConfig(authorizationConfig)) {
     next();
