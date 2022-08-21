@@ -32,7 +32,7 @@ const getConfig = (path, method) => {
 
 const getProxyUrl = (path, method) => {
   const config = getConfig(path, method);
-  return config.routeFqdn;
+  return config?.routeFqdn;
 };
 
 module.exports.getConfigs = getConfigs;
