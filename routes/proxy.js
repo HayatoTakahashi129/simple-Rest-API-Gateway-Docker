@@ -17,6 +17,9 @@ const proxyRouter = (req, res, next) => {
   const method = req.method.toLowerCase();
   const proxyUrl = getProxyUrl(url, method);
   console.log(proxyUrl);
+  if (!proxyUrl) {
+    return res.status(404).json({ message: "Not Found" });
+  }
 
   return httpProxy(proxyUrl, {
     https: isHttps(proxyUrl),

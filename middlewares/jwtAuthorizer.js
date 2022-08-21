@@ -5,7 +5,7 @@ const getConfigAuthorization = (req) => {
   const method = req.method;
   console.log("input:", { path, method });
   const config = getConfig(path, method);
-  return config.authorization;
+  return config?.authorization;
 };
 
 const isValidConfig = (config) => {
