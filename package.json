@@ -3,16 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node /www",
+    "start:dev": "ts-node-dev --respawn ./bin/www.ts",
     "start:docker": "docker start apigateway || bash -c 'docker run -d -e HOT_RELOAD=true -v /`pwd`/configs/apiConfig.yaml:/code/configs/apiConfig.yaml -p 30001:30001 --name apigateway apigateway'",
     "stop:docker": "docker stop apigateway"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-http-proxy": "^1.6.3",
-    "js-yaml": "^4.1.0",
-    "morgan": "~1.9.1"
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.7.8",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
   }
 }
