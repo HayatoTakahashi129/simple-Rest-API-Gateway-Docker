@@ -1,7 +1,7 @@
 const jsYaml = require("js-yaml");
 const fs = require("fs");
 
-const FILE_PATH = "configs/apiConfig.yaml";
+const CONFIG_PATH = process.env.CONFIG_PATH || "configs/apiConfig.yaml";
 
 /**
  * parse config file and return as Object.
@@ -9,7 +9,7 @@ const FILE_PATH = "configs/apiConfig.yaml";
  */
 const readConfigFile = () => {
   try {
-    const file = fs.readFileSync(FILE_PATH, "utf-8");
+    const file = fs.readFileSync(CONFIG_PATH, "utf-8");
     return jsYaml.load(file);
   } catch (error) {
     console.error(error);
@@ -20,7 +20,7 @@ const readConfigFile = () => {
 const CACHED_CONFIG = readConfigFile();
 
 const getConfigs = () => {
-  if (process.env.HOST_RELOAD === "true") return readConfigFile();
+  if (process.env.HOT_RELOAD === "true") return readConfigFile();
   return CACHED_CONFIG;
 };
 
