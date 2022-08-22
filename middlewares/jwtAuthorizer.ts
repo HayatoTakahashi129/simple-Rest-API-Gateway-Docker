@@ -1,10 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import Authorization from "../configs/types/Authorization";
-const { getConfig } = require("../configs/config");
+import { getConfig } from "../configs/config";
+import { isMethods } from "../configs/types/MethodConfig";
 
 const getConfigAuthorization = (req: Request): Authorization => {
   const path = req.path;
   const method = req.method;
+  if (!isMethods(method)) {
+    throw new Error(`UnExpected method has come. \n method: ${method}`);
+  }
   console.log("input:", { path, method });
   const config = getConfig(path, method);
   return config.authorization;
@@ -89,4 +93,4 @@ const jwtAuthorizer = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-module.exports = jwtAuthorizer;
+export default jwtAuthorizer;

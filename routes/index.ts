@@ -4,4 +4,4 @@ import proxyRouter from "./proxy";
 
 router.use("/", proxyRouter);
 
-module.exports = router;
+export default router;

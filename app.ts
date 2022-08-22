@@ -1,7 +1,7 @@
 import express, { Application } from "express";
-const jwtAuthorizer = require("./middlewares/jwtAuthorizer");
+import jwtAuthorizer from "./middlewares/jwtAuthorizer";
 
-const indexRouter = require("./routes/index");
+import indexRouter from "./routes/index";
 
 const app: Application = express();
 
