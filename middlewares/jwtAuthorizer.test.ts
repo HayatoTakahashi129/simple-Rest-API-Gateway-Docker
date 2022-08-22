@@ -21,29 +21,44 @@ describe("JWT Authorize middleware", () => {
     const testFunc = (path: string, method: string) => () =>
       getConfigAuthorization({ path, method });
 
-    test("when specified api doesn't have authorization in config, then return undefined", () => {
-      expect(testFunc("/todo", "GET")()).toBe(undefined);
-    });
+    test.concurrent(
+      "when specified api doesn't have authorization in config, then return undefined",
+      () => {
+        expect(testFunc("/todo", "GET")()).toBe(undefined);
+      }
+    );
 
-    test("when not exist api in config is specified, then throw error.", () => {
-      expect(testFunc("/noexistpath", "GET")).toThrow();
-    });
+    test.concurrent(
+      "when not exist api in config is specified, then throw error.",
+      () => {
+        expect(testFunc("/noexistpath", "GET")).toThrow();
+      }
+    );
 
-    test("when not exist method is specified (like method:FOO), then throw error.", () => {
-      expect(testFunc("/todo", "FOO")).toThrow();
-    });
+    test.concurrent(
+      "when not exist method is specified (like method:FOO), then throw error.",
+      () => {
+        expect(testFunc("/todo", "FOO")).toThrow();
+      }
+    );
 
-    test("when specified method doesn't exist in config, then throw error. ", () => {
-      expect(testFunc("/todo", "HEAD")).toThrow();
-    });
+    test.concurrent(
+      "when specified method doesn't exist in config, then throw error. ",
+      () => {
+        expect(testFunc("/todo", "HEAD")).toThrow();
+      }
+    );
 
-    test("when specified exist url and method, then return authorization config.", () => {
-      const expectConfig: Authorization = {
-        header: "Authorization",
-        type: "jwt",
-      };
-      expect(testFunc("/todo", "POST")()).toEqual(expectConfig);
-    });
+    test.concurrent(
+      "when specified exist url and method, then return authorization config.",
+      () => {
+        const expectConfig: Authorization = {
+          header: "Authorization",
+          type: "jwt",
+        };
+        expect(testFunc("/todo", "POST")()).toEqual(expectConfig);
+      }
+    );
   });
 
   describe("getAuthorizationHeader", () => {
@@ -60,28 +75,43 @@ describe("JWT Authorize middleware", () => {
       expectValue: string
     ) => expect(testFunction(inputHeader)).toBe(expectValue);
 
-    test("when no authorization header is in request, then return empty string.", () => {
-      expectResult(undefined, "");
-    });
+    test.concurrent(
+      "when no authorization header is in request, then return empty string.",
+      () => {
+        expectResult(undefined, "");
+      }
+    );
 
-    test("when authorization header with no bearer is in request, then return that value.", () => {
-      expectResult("authresult", "authresult");
-    });
+    test.concurrent(
+      "when authorization header with no bearer is in request, then return that value.",
+      () => {
+        expectResult("authresult", "authresult");
+      }
+    );
 
-    test("when authorization header with bearer is in request, then return the value without bearer", () => {
-      expectResult("Bearer authresult", "authresult");
-    });
+    test.concurrent(
+      "when authorization header with bearer is in request, then return the value without bearer",
+      () => {
+        expectResult("Bearer authresult", "authresult");
+      }
+    );
 
-    test("when multiple authorization headeers without bearer are in the request, then return first value", () => {
-      expectResult(["firstResult", "secondResult"], "firstResult");
-    });
+    test.concurrent(
+      "when multiple authorization headeers without bearer are in the request, then return first value",
+      () => {
+        expectResult(["firstResult", "secondResult"], "firstResult");
+      }
+    );
 
-    test("when multiple authorization headeers with bearer are in the request, then return first value without bearer", () => {
-      expectResult(
-        ["Bearer firstResult", "Bearer secondResult"],
-        "firstResult"
-      );
-    });
+    test.concurrent(
+      "when multiple authorization headeers with bearer are in the request, then return first value without bearer",
+      () => {
+        expectResult(
+          ["Bearer firstResult", "Bearer secondResult"],
+          "firstResult"
+        );
+      }
+    );
   });
 
   describe("isDotsContains", () => {
@@ -89,27 +119,36 @@ describe("JWT Authorize middleware", () => {
     const expectNotValidString = (value: string | null) =>
       expect(isDotsContains(value)).toBe(false);
 
-    test("when specified valid jwt, then return true", () => {
+    test.concurrent("when specified valid jwt, then return true", () => {
       const jwt: string =
         "eyJraWQiOiJBNWxBY1l1Vk1UaWdybDIwZjV3cWs4MEJVNnNGeXlENlc2WXpBZktjT0dFPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmYWQ4NDFmZS1mNzg3LTQwYWItOWVlMC0xOWJhNGFkM2U1YjciLCJjb2duaXRvOmdyb3VwcyI6WyJEZW1vVXNlciJdLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmFwLW5vcnRoZWFzdC0xLmFtYXpvbmF3cy5jb21cL2FwLW5vcnRoZWFzdC0xX0VJQ1ZuV2pJeSIsImNvZ25pdG86dXNlcm5hbWUiOiJmYWQ4NDFmZS1mNzg3LTQwYWItOWVlMC0xOWJhNGFkM2U1YjciLCJjdXN0b206bmlja25hbWUiOiJoYXlhdG8iLCJvcmlnaW5fanRpIjoiYzBkNTk4ZTktNGU0MC00MDBjLTk4MTQtN2M0OTk4NjIwN2Y2IiwiYXVkIjoiN3Q5aWF1YzB2azNvZDZ2YTV0ZWxhbDVoZSIsImV2ZW50X2lkIjoiN2MzNDJlN2ItYzgzZi00Yzg2LTk0NTctNjZjOGYzZTIxMGVlIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2NjAzODE5MjcsImV4cCI6MTY2MTA1Mjc1MywiaWF0IjoxNjYxMDQ5MTUzLCJqdGkiOiI3Yjc5NjUxNy1mOGIwLTQ1ZTctOTRjYi1kNWJlOTc0ZjNhMGUiLCJlbWFpbCI6ImhheWF0by4wMTI5OTVAZ21haWwuY29tIn0.LQK8rxGxMwuoydkontIT-MxX_uy0fTq1aIW46q6QMSeePEQUJJ_lO2mNgv5qdBgYI22uSmbbf2dSGzP_GdOd778USVjesldQbGIlPngZksHOAVsyDBFqwNPBw4hK1LFtDHb1Nal7BxY3C1rwSh76IjLIsVOt0jQDmgovTDG8hqz2h8Xv5d0KpV1ssCXrl22w4-UPQ3bNLcvPkEuYNmzStXkl23bhnMcjP_X66D5zoKt6bpKHU-cgJjIcEeTeUXxufxeClFyZQc4kjeMff8BfTbJhhMmwBEp7y4UDniaErEvsrZIIKj_iLcMlSxZSYwlJpkKYhSAW3OBo9l8va0qxTw";
       expect(isDotsContains(jwt)).toBe(true);
     });
 
-    test("when specified null, then return false", () => {
+    test.concurrent("when specified null, then return false", () => {
       expectNotValidString(null);
     });
 
-    test("when no dots string was specified, then return false", () => {
-      expectNotValidString("nodotsexistyeeeeahhhh");
-    });
+    test.concurrent(
+      "when no dots string was specified, then return false",
+      () => {
+        expectNotValidString("nodotsexistyeeeeahhhh");
+      }
+    );
 
-    test("when only 1 dot is in argument string, then return false", () => {
-      expectNotValidString("onlyonedot.isinstring");
-    });
+    test.concurrent(
+      "when only 1 dot is in argument string, then return false",
+      () => {
+        expectNotValidString("onlyonedot.isinstring");
+      }
+    );
 
-    test("when more than 2 dots included string is specified, then return false", () => {
-      expectNotValidString("morethan.twodots.isincluded.inthisstring");
-    });
+    test.concurrent(
+      "when more than 2 dots included string is specified, then return false",
+      () => {
+        expectNotValidString("morethan.twodots.isincluded.inthisstring");
+      }
+    );
   });
 
   describe("isExpired", () => {
@@ -119,20 +158,26 @@ describe("JWT Authorize middleware", () => {
     const expectWithError = (value: string | null) =>
       expect(testFunc(value)).toThrow();
 
-    test("when null is specified, then throw error.", () => {
+    test.concurrent("when null is specified, then throw error.", () => {
       expectWithError(null);
     });
 
-    test("when no dots string was specified, then throw error.", () => {
-      expectWithError("testwithnodots");
-    });
+    test.concurrent(
+      "when no dots string was specified, then throw error.",
+      () => {
+        expectWithError("testwithnodots");
+      }
+    );
 
-    test("when not json object was specified as paylaod, then throw error.", () => {
-      const jwt = createSampleJWT("samplejwtpayload");
-      expectWithError(jwt);
-    });
+    test.concurrent(
+      "when not json object was specified as paylaod, then throw error.",
+      () => {
+        const jwt = createSampleJWT("samplejwtpayload");
+        expectWithError(jwt);
+      }
+    );
 
-    test("when no exp in payload, then throw error.", () => {
+    test.concurrent("when no exp in payload, then throw error.", () => {
       const paylaod = {
         sub: "fad841fe-f787-40ab-9ee0-19ba4ad3e5b7",
         iss: "https://sample.com",
@@ -147,37 +192,43 @@ describe("JWT Authorize middleware", () => {
       expectWithError(jwt);
     });
 
-    test("when exp is specified as expired date, then return true", () => {
-      const paylaod = {
-        sub: "fad841fe-f787-40ab-9ee0-19ba4ad3e5b7",
-        iss: "https://sample.com",
-        origin_jti: "c0d598e9-4e40-400c-9814-7c49986207f6",
-        exp: 1661052753, // Sat Aug 13 2022 18:12:07 GMT+0900
-        aud: "7t9iauc0vk3od6va5telal5he",
-        token_use: "id",
-        auth_time: 1660381927,
-        iat: 1661049153,
-        jti: "7b796517-f8b0-45e7-94cb-d5be974f3a0e",
-      };
-      const jwt = createSampleJWT(paylaod);
-      expect(isExpired(jwt)).toBe(true);
-    });
+    test.concurrent(
+      "when exp is specified as expired date, then return true",
+      () => {
+        const paylaod = {
+          sub: "fad841fe-f787-40ab-9ee0-19ba4ad3e5b7",
+          iss: "https://sample.com",
+          origin_jti: "c0d598e9-4e40-400c-9814-7c49986207f6",
+          exp: 1661052753, // Sat Aug 13 2022 18:12:07 GMT+0900
+          aud: "7t9iauc0vk3od6va5telal5he",
+          token_use: "id",
+          auth_time: 1660381927,
+          iat: 1661049153,
+          jti: "7b796517-f8b0-45e7-94cb-d5be974f3a0e",
+        };
+        const jwt = createSampleJWT(paylaod);
+        expect(isExpired(jwt)).toBe(true);
+      }
+    );
 
-    test("when exp is specified not expired date, then return true", () => {
-      const paylaod = {
-        sub: "fad841fe-f787-40ab-9ee0-19ba4ad3e5b7",
-        iss: "https://sample.com",
-        origin_jti: "c0d598e9-4e40-400c-9814-7c49986207f6",
-        exp: 9999052753, // Sat Aug 13 2022 18:12:07 GMT+0900
-        aud: "7t9iauc0vk3od6va5telal5he",
-        token_use: "id",
-        auth_time: 1660381927,
-        iat: 1661049153,
-        jti: "7b796517-f8b0-45e7-94cb-d5be974f3a0e",
-      };
-      const jwt = createSampleJWT(paylaod);
-      expect(isExpired(jwt)).toBe(false);
-    });
+    test.concurrent(
+      "when exp is specified not expired date, then return true",
+      () => {
+        const paylaod = {
+          sub: "fad841fe-f787-40ab-9ee0-19ba4ad3e5b7",
+          iss: "https://sample.com",
+          origin_jti: "c0d598e9-4e40-400c-9814-7c49986207f6",
+          exp: 9999052753, // Sat Aug 13 2022 18:12:07 GMT+0900
+          aud: "7t9iauc0vk3od6va5telal5he",
+          token_use: "id",
+          auth_time: 1660381927,
+          iat: 1661049153,
+          jti: "7b796517-f8b0-45e7-94cb-d5be974f3a0e",
+        };
+        const jwt = createSampleJWT(paylaod);
+        expect(isExpired(jwt)).toBe(false);
+      }
+    );
   });
 
   describe("jwtAuthorizer", () => {
