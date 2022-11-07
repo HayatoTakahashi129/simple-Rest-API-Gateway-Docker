@@ -1,8 +1,8 @@
-import ApiConfig from "./types/ApiConfig";
+import ApiConfig, { isApiConfig } from "./types/ApiConfig";
 import MethodConfig, { methods } from "./types/MethodConfig";
 
-const jsYaml = require("js-yaml");
-const fs = require("fs");
+import jsYaml from "js-yaml";
+import fs from "fs";
 
 const CONFIG_PATH = process.env.CONFIG_PATH || "configs/apiConfig.yaml";
 
@@ -11,23 +11,27 @@ const CONFIG_PATH = process.env.CONFIG_PATH || "configs/apiConfig.yaml";
  * @returns parsed config file object.
  */
 const readConfigFile = (): ApiConfig => {
-  try {
-    const file = fs.readFileSync(CONFIG_PATH, "utf-8");
-    return jsYaml.load(file);
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const file = fs.readFileSync(CONFIG_PATH, "utf-8");
+  const apiConfigJson = jsYaml.load(file);
+  if (!isApiConfig(apiConfigJson)) {
+    console.log("first");
+    throw new Error(
+      `input yaml file is not the style we excepted.\n file path: ${CONFIG_PATH}\n YamlObject: ${JSON.stringify(
+        apiConfigJson
+      )}`
+    );
   }
+  return apiConfigJson;
 };
 
 const CACHED_CONFIG = readConfigFile();
 
-const getConfigs = () => {
+export const getConfigs = () => {
   if (process.env.HOT_RELOAD === "true") return readConfigFile();
   return CACHED_CONFIG;
 };
 
-const getConfig = (path: string, method: methods): MethodConfig => {
+export const getConfig = (path: string, method: methods): MethodConfig => {
   const configs = getConfigs();
   if (!configs[path]) {
     throw new Error(
@@ -43,7 +47,7 @@ const getConfig = (path: string, method: methods): MethodConfig => {
   return methodConfig;
 };
 
-const getProxyUrl = (path: string, method: methods): string => {
+export const getProxyUrl = (path: string, method: methods): string => {
   const config = getConfig(path, method);
   if (!config.routeFqdn) {
     throw new Error(
@@ -52,7 +56,3 @@ const getProxyUrl = (path: string, method: methods): string => {
   }
   return config.routeFqdn;
 };
-
-module.exports.getConfigs = getConfigs;
-module.exports.getConfig = getConfig;
-module.exports.getProxyUrl = getProxyUrl;

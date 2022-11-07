@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-const httpProxy = require("express-http-proxy");
-const { getProxyUrl } = require("../configs/config");
+
+import httpProxy from "express-http-proxy";
+import { getProxyUrl } from "../configs/config";
+import { isMethods } from "../configs/types/MethodConfig";
 
 const isHttps = (url: string): boolean => {
   return url.includes("https://");
@@ -20,6 +22,9 @@ const proxyRouter: (req: Request, res: Response, next: NextFunction) => void = (
 ) => {
   const url: string = req.path;
   const method: string = req.method;
+  if (!isMethods(method)) {
+    throw new Error(`Unexpected method has come. \n method: ${method}`);
+  }
   const proxyUrl: string = getProxyUrl(url, method);
   console.log(proxyUrl);
   if (!proxyUrl) {

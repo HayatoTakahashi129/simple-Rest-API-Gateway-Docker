@@ -1,20 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import Authorization from "../configs/types/Authorization";
-const { getConfig } = require("../configs/config");
+import { getConfig } from "../configs/config";
+import { isMethods } from "../configs/types/MethodConfig";
 
-const getConfigAuthorization = (req: Request): Authorization => {
+const getConfigAuthorization = (req: Request): Authorization | undefined => {
   const path = req.path;
   const method = req.method;
+  if (!isMethods(method)) {
+    throw new Error(`UnExpected method has come. \n method: ${method}`);
+  }
   console.log("input:", { path, method });
   const config = getConfig(path, method);
   return config.authorization;
-};
-
-const isValidConfig = (config: Authorization | undefined): boolean => {
-  if (!config) return false;
-  if (!config.hasOwnProperty("header") || !config.hasOwnProperty("type"))
-    return false;
-  return true;
 };
 
 const getAuthorizationHeader = (
@@ -33,14 +30,20 @@ const getAuthorizationHeader = (
 };
 
 const isDotsContains = (authorization: string): boolean => {
+  if (!authorization) return false;
   const splitDots = authorization.split(".");
   return splitDots.length === 3;
 };
 
 const isExpired = (authorization: string): boolean => {
+  if (!isDotsContains(authorization))
+    throw new Error(
+      `not JWT formatted token is scpecified.\n token: ${authorization}`
+    );
   const payload = authorization.split(".")[1];
   const decodePayload = Buffer.from(payload, "base64").toString();
   const payloadJson = JSON.parse(decodePayload);
+  if (!payloadJson.exp) throw new Error("no exp is exist in JWT.");
 
   const exp = payloadJson.exp;
   const now = new Date();
@@ -63,15 +66,11 @@ const unAuthorizedResponse = (res: Response, next: NextFunction) => {
  */
 const jwtAuthorizer = (req: Request, res: Response, next: NextFunction) => {
   const authorizationConfig = getConfigAuthorization(req);
-  if (!isValidConfig(authorizationConfig)) {
+  if (authorizationConfig == undefined) {
     next();
     return;
   }
 
-  if (authorizationConfig.type !== "jwt") {
-    next();
-    return;
-  }
   const authorizationHeader = getAuthorizationHeader(req, authorizationConfig);
   if (!authorizationHeader) {
     unAuthorizedResponse(res, next);
@@ -89,4 +88,4 @@ const jwtAuthorizer = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-module.exports = jwtAuthorizer;
+export default jwtAuthorizer;
