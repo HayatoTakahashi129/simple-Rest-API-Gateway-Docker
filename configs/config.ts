@@ -11,19 +11,17 @@ const CONFIG_PATH = process.env.CONFIG_PATH || "configs/apiConfig.yaml";
  * @returns parsed config file object.
  */
 const readConfigFile = (): ApiConfig => {
-  try {
-    const file = fs.readFileSync(CONFIG_PATH, "utf-8");
-    const apiConfigJson = jsYaml.load(file);
-    if (!isApiConfig(apiConfigJson)) {
-      throw new Error(
-        `input yaml file is not the style we excepted.\n file path: ${CONFIG_PATH}`
-      );
-    }
-    return apiConfigJson;
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const file = fs.readFileSync(CONFIG_PATH, "utf-8");
+  const apiConfigJson = jsYaml.load(file);
+  if (!isApiConfig(apiConfigJson)) {
+    console.log("first");
+    throw new Error(
+      `input yaml file is not the style we excepted.\n file path: ${CONFIG_PATH}\n YamlObject: ${JSON.stringify(
+        apiConfigJson
+      )}`
+    );
   }
+  return apiConfigJson;
 };
 
 const CACHED_CONFIG = readConfigFile();

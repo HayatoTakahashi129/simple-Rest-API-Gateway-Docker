@@ -9,9 +9,11 @@ export const isApiConfig = (object: unknown): object is ApiConfig => {
   if (typeof object !== "object") return false;
   if (object == null) return false;
 
-  Object.values(object).forEach((value) => {
-    if (!isMethodConfig(value)) return false;
-  });
+  for (const value of Object.values(object)) {
+    if (!isMethodConfig(value)) {
+      return false;
+    }
+  }
   return true;
 };
 
