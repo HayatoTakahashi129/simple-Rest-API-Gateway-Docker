@@ -9,8 +9,8 @@ module.exports = {
       http: false,
       // fs: false,
     },
+    modules: ["node_modules"],
   },
-  externals: [nodeExternals()],
   module: {
     rules: [
       {
