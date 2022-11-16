@@ -1,7 +1,7 @@
 import ApiConfig, { isApiConfig } from "./types/ApiConfig";
 import MethodConfig, { methods } from "./types/MethodConfig";
 
-import jsYaml from "js-yaml";
+import { load } from "js-yaml";
 import fs from "fs";
 
 const CONFIG_PATH = process.env.CONFIG_PATH || "configs/apiConfig.yaml";
@@ -12,7 +12,7 @@ const CONFIG_PATH = process.env.CONFIG_PATH || "configs/apiConfig.yaml";
  */
 const readConfigFile = (): ApiConfig => {
   const file = fs.readFileSync(CONFIG_PATH, "utf-8");
-  const apiConfigJson = jsYaml.load(file);
+  const apiConfigJson = load(file);
   if (!isApiConfig(apiConfigJson)) {
     console.log("first");
     throw new Error(
