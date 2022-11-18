@@ -7,6 +7,7 @@
     "test": "ts-node node_modules/jest/bin/jest.js",
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
+    "build:docker": "docker build ./ -t apigateway",
     "debug": "tsc-watch --onSuccess \"nodemon --inspect dist/bin/www.js\"",
     "start:docker": "docker start apigateway || bash -c 'docker run -d -e HOT_RELOAD=true -v /`pwd`/configs/apiConfig.yaml:/code/configs/apiConfig.yaml -p 30001:30001 --name apigateway apigateway'",
     "stop:docker": "docker stop apigateway"
